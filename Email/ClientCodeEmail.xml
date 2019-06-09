@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<email>
+  <subject> Software User Registration: </subject>
+  <messgae>
+    <![CDATA[<html>
+   
+                                        Your Email Address and Phone Number is now Confirm
+                                        <br />
+                                        Your Client Code Is: ##ClientCode##                                
+                                        <br />
+                                    
+    </html>]]>
+  </messgae>
+</email>

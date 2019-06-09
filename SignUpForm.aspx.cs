@@ -1,0 +1,315 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Management;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+//using System.Windows.Forms;
+using System.Threading;
+using System.Management;
+using System.Web.Services;
+using System.Web.Script.Services;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Data;
+using System.Web;
+using System.Xml;
+using Microsoft.SqlServer.Server;
+
+public partial class SignUpForm : System.Web.UI.Page
+{
+    public static string MachineName = HttpContext.Current.Server.MachineName;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        HttpContext.Current.Session["FinancialYear"] = FinancialYear();
+    }
+
+    public static string FinancialYear()
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["UserDetails"].ConnectionString);
+        var i = "0";
+        conn.Open();
+
+        try
+        {
+
+            SqlCommand cmd = new SqlCommand("GetFinancialYear", conn);
+            cmd.CommandType = CommandType.StoredProcedure;          
+            i = cmd.ExecuteScalar().ToString();            
+            cmd.Dispose();
+            conn.Close();
+        }
+        catch (Exception Ex)
+        {
+            throw Ex;
+        }
+        finally
+        {
+            if (conn.State == ConnectionState.Open)
+                conn.Close();
+        }
+        return i;
+    }
+
+
+    public class UserDetails1
+    {
+        public Int64 UserType { get; set; }
+        public Int64 Pincode { get; set; }
+        public Int64 City { get; set; }
+        public Int64 State { get; set; }
+        public Int64 Country { get; set; }
+        public Int64 MobileNo { get; set; }
+        public Int64 UserSeletetion { get; set; }
+        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Address { get; set; }
+        public string Email { get; set; }
+        public string Comname { get; set; }
+        public string Application { get; set; }
+        public string Pwd { get; set; }
+    }
+
+
+    [WebMethod]
+    [ScriptMethod]
+    public static string ManageUserDetail(UserDetails1 UReg)
+    {
+        string msg = string.Empty;
+
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["UserDetails"].ConnectionString);
+        conn.Open();
+        try
+        {
+
+
+            var Mac = GetMACAddress();
+            var ip = GetIPAddress();
+            var proce = GetProcessorId();
+
+            SqlCommand cmd = new SqlCommand("InsertUserRegistration", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@UserTypeID", SqlDbType.BigInt).Value = UReg.UserType;
+            cmd.Parameters.Add("@UserName", SqlDbType.VarChar).Value = UReg.UserName;
+            cmd.Parameters.Add("@FirstName", SqlDbType.VarChar).Value = UReg.FirstName;
+            cmd.Parameters.Add("@LastName", SqlDbType.VarChar).Value = UReg.LastName;
+            cmd.Parameters.Add("@Address", SqlDbType.VarChar).Value = UReg.Address;
+            cmd.Parameters.Add("@CountryID", SqlDbType.BigInt).Value = UReg.Country;
+            cmd.Parameters.Add("@StateID", SqlDbType.BigInt).Value = UReg.State;
+            cmd.Parameters.Add("@CityID", SqlDbType.BigInt).Value = UReg.City;
+            cmd.Parameters.Add("@PinCode", SqlDbType.VarChar).Value = UReg.Pincode;
+            cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = UReg.Email;
+            cmd.Parameters.Add("@MobileNo", SqlDbType.VarChar).Value = UReg.MobileNo;
+            cmd.Parameters.Add("@noofuser", SqlDbType.VarChar).Value = UReg.UserSeletetion;
+            cmd.Parameters.Add("@CompanyName", SqlDbType.VarChar).Value = UReg.Comname;
+            cmd.Parameters.Add("@ApplicationName", SqlDbType.VarChar).Value = UReg.Application;
+            cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = UReg.Pwd;
+            cmd.Parameters.Add("@MacAddress", SqlDbType.VarChar).Value = Mac;
+            cmd.Parameters.Add("@IPAddress", SqlDbType.VarChar).Value = ip;
+            cmd.Parameters.Add("@MachineName", SqlDbType.NVarChar).Value = MachineName;
+            cmd.Parameters.Add("@ProcessorID", SqlDbType.VarChar).Value = proce;
+            cmd.Parameters.Add("@YearID", SqlDbType.BigInt).Value = HttpContext.Current.Session["FinancialYear"];
+
+            int i = Convert.ToInt16(cmd.ExecuteScalar().ToString());
+            cmd.Dispose();
+            conn.Close();
+
+
+            conn.Open();
+            SqlCommand cmd1 = new SqlCommand("CreateNodeNo", conn);
+            cmd1.CommandType = CommandType.StoredProcedure;
+            cmd1.Parameters.Add("@YearID", SqlDbType.BigInt).Value = HttpContext.Current.Session["FinancialYear"];
+            cmd1.Parameters.Add("@RegistrationID", SqlDbType.VarChar).Value = i;
+            cmd1.Parameters.Add("@NoofUser", SqlDbType.VarChar).Value = UReg.UserSeletetion;
+
+            cmd1.ExecuteScalar();
+            cmd.Dispose();
+            conn.Close();
+
+            #region Send Email to User including Verify Link
+            string strStatus = "";
+
+
+            XmlDocument XMLdoc = new XmlDocument();
+
+            XMLdoc.Load(HttpContext.Current.Server.MapPath("Email/AuthorRegistration.xml"));
+            XmlElement root = XMLdoc.DocumentElement;
+            XmlNodeList nodes = root.SelectNodes("/email");
+
+            string strSubject = "";
+            string strBody = "";
+
+            foreach (XmlNode node in nodes)
+            {
+                strSubject = node["subject"].InnerText;
+                strBody = node["messgae"].InnerText;
+
+            }
+
+            strBody = strBody.Replace("##USERNAME##", UReg.UserName);
+            strBody = strBody.Replace("##PASSWORD##", UReg.Pwd);
+            strBody = strBody.Replace("##VERIFYPAGEURL##", ConfigurationSettings.AppSettings["AdminSiteURL"].ToString() + "?RegNo=" + i);
+            strStatus = Mail.SendHTMLMail(ConfigurationManager.AppSettings["smtphost"].ToString(), "Jaimini Software Pvt. Ltd.", ConfigurationManager.AppSettings["From"].ToString(), UReg.Email.ToString(), Convert.ToInt32(ConfigurationSettings.AppSettings["port"].ToString()), strSubject, "", "", "", "", strBody);
+            #endregion
+
+            // }
+
+        }
+        catch (Exception ex)
+        {
+            //   Global.ErrorInsert(ex.Message, formname, "UserManage");
+            msg = "Error" + ex.Message;
+        }
+        finally
+        {
+            if (conn.State == ConnectionState.Open)
+                conn.Close();
+        }
+        return msg;
+    }
+
+
+    [WebMethod]
+    [ScriptMethod]
+    public static bool CheckHardware()
+    {
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["UserDetails"].ConnectionString);
+        string msg = string.Empty;
+        bool IsExist = false;
+        var IPAddress = GetIPAddress();
+        var RouterIP = NetworkGateway();
+        var RouterMac = GetMacAddress(RouterIP);
+
+        try
+        {
+
+            con.Open();
+            SqlCommand cmd = new SqlCommand("CheckHardWare", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@RouterMacAddress", SqlDbType.VarChar).Value = RouterMac;
+            cmd.Parameters.Add("@RouterIPAddress", SqlDbType.VarChar).Value = RouterIP;
+            int i = Convert.ToInt32(cmd.ExecuteScalar());
+            if (i == 0)
+                IsExist = false;
+            else
+                IsExist = true;
+        }
+        catch (Exception ex)
+        {
+            //Global.ErrorInsert(ex.Message, formname, "CheckEmail");
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+                con.Close();
+        }
+        return IsExist;
+    }
+
+    public static String GetProcessorId()
+    {
+
+        ManagementClass mc = new ManagementClass("win32_processor");
+        ManagementObjectCollection moc = mc.GetInstances();
+        String Id = String.Empty;
+        foreach (ManagementObject mo in moc)
+        {
+
+            Id = mo.Properties["processorID"].Value.ToString();
+            break;
+        }
+        return Id;
+
+    }
+
+    public static String GetHDDSerialNo()
+    {
+        ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
+        ManagementObjectCollection mcol = mangnmt.GetInstances();
+        string result = "";
+        foreach (ManagementObject strt in mcol)
+        {
+            result += Convert.ToString(strt["VolumeSerialNumber"]);
+        }
+        return result;
+    }
+
+    [WebMethod]
+    public static string GetMACAddress()
+    {
+        ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
+        ManagementObjectCollection moc = mc.GetInstances();
+        string MACAddress = String.Empty;
+        foreach (ManagementObject mo in moc)
+        {
+            if (MACAddress == String.Empty)
+            {
+                if ((bool)mo["IPEnabled"] == true) MACAddress = mo["MacAddress"].ToString();
+            }
+            mo.Dispose();
+        }
+
+        MACAddress = MACAddress.Replace(":", "");
+        return MACAddress;
+    }
+
+    public static string GetIPAddress()
+    {
+        string hostName = String.Empty;
+        hostName = Dns.GetHostName(); // Retrive the Name of HOST  
+        Console.WriteLine(hostName);
+        // Get the IP  
+        string myIP = String.Empty;
+        myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+        return myIP;
+    }
+
+    public static string NetworkGateway()
+    {
+        string ip = null;
+
+        foreach (NetworkInterface f in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (f.OperationalStatus == OperationalStatus.Up)
+            {
+                foreach (GatewayIPAddressInformation d in f.GetIPProperties().GatewayAddresses)
+                {
+
+                    ip = d.Address.ToString();
+                }
+            }
+        }
+
+        return ip;
+    }
+
+    public static string GetMacAddress(string ipAddress)
+    {
+        string macAddress = string.Empty;
+        System.Diagnostics.Process Process = new System.Diagnostics.Process();
+        Process.StartInfo.FileName = "arp";
+        Process.StartInfo.Arguments = "-a " + ipAddress;
+        Process.StartInfo.UseShellExecute = false;
+        Process.StartInfo.RedirectStandardOutput = true;
+        Process.StartInfo.CreateNoWindow = true;
+        Process.Start();
+        string strOutput = Process.StandardOutput.ReadToEnd();
+        string[] substrings = strOutput.Split('-');
+        if (substrings.Length >= 8)
+        {
+            macAddress = substrings[3].Substring(Math.Max(0, substrings[3].Length - 2))
+                     + "-" + substrings[4] + "-" + substrings[5] + "-" + substrings[6]
+                     + "-" + substrings[7] + "-"
+                     + substrings[8].Substring(0, 2);
+            return macAddress;
+        }
+
+        else
+        {
+            return "OWN Machine";
+        }
+    }
+}

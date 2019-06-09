@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "SoftwareRegistration", ".", "{C16A5E08-3CB8-4028-81AC-D1DFF5221726}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/SoftwareRegistration"
+		Debug.AspNetCompiler.PhysicalPath = "..\SoftwareRegistration\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\SoftwareRegistration\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/SoftwareRegistration"
+		Release.AspNetCompiler.PhysicalPath = "..\SoftwareRegistration\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\SoftwareRegistration\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "4871"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C16A5E08-3CB8-4028-81AC-D1DFF5221726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C16A5E08-3CB8-4028-81AC-D1DFF5221726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

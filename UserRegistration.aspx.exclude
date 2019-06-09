@@ -1,0 +1,279 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="UserRegistration.aspx.cs" Inherits="UserRegistration" %>
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="Link1">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+      <title>Software Registration</title>           
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <table class="auto-style1">
+            <tr>
+                <td>UserType :</td>
+                <td>
+                    <asp:DropDownList ID="ddlUserType" runat="server" DataSourceID="dsUserType" DataTextField="UserType" DataValueField="UserTypeID"></asp:DropDownList>
+                    <asp:SqlDataSource ID="dsUserType" runat="server" ConnectionString='<%$ ConnectionStrings:UserDetails %>' SelectCommandType="StoredProcedure" SelectCommand="ListUserType"></asp:SqlDataSource>
+                </td>
+
+            </tr>
+            <tr>
+                <td>User Name :</td>
+                <td>
+                    <asp:TextBox ID="txtUserName" runat="server"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td>First Name :</td>
+                <td>
+                    <asp:TextBox ID="txtFirstName" runat="server"></asp:TextBox></td>
+                <td></td>
+                <td>Last Name :</td>
+                <td>
+                    <asp:TextBox ID="txtLastName" runat="server"></asp:TextBox></td>
+
+            </tr>
+            <tr>
+                <td>Address :</td>
+                <td>
+                    <asp:TextBox ID="txtAddress" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>PinCode :</td>
+                <td>
+                    <asp:TextBox ID="txtPin" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>City :</td>
+                <td>
+                    <asp:DropDownList ID="ddlCity" runat="server" DataSourceID="dsCity" DataTextField="CityName" DataValueField="CityID"></asp:DropDownList>
+                    <asp:SqlDataSource ID="dsCity" runat="server" ConnectionString='<%$ ConnectionStrings:UserDetails %>' SelectCommandType="StoredProcedure" SelectCommand="ListCity"></asp:SqlDataSource>
+                </td>
+            </tr>
+            <tr>
+                <td>State :</td>
+                <td>
+                    <asp:DropDownList ID="ddlState" runat="server" DataSourceID="dsState" DataTextField="StateName" DataValueField="StateID"></asp:DropDownList>
+                    <asp:SqlDataSource ID="dsState" runat="server" ConnectionString='<%$ ConnectionStrings:UserDetails %>' SelectCommandType="StoredProcedure" SelectCommand="ListState"></asp:SqlDataSource>
+                </td>
+            </tr>
+            <tr>
+                <td>Country :</td>
+                <td>
+                    <asp:DropDownList ID="ddlCountry" runat="server" DataSourceID="dsCountry" DataTextField="CountryName" DataValueField="CountryID"></asp:DropDownList>
+                    <asp:SqlDataSource ID="dsCountry" runat="server" ConnectionString='<%$ ConnectionStrings:UserDetails %>' SelectCommandType="StoredProcedure" SelectCommand="ListCountry"></asp:SqlDataSource>
+                </td>
+            </tr>
+            <tr>
+                <td>Mobile No. :</td>
+                <td>
+                    <asp:TextBox ID="txtMobileNo" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>Email :</td>
+                <td>
+                    <asp:TextBox ID="txtEmail" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>Company Name :</td>
+                <td>
+                    <asp:TextBox ID="txtCompany" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>Application Name :</td>
+                <td>
+                    <asp:TextBox ID="txtApplication" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>User Selection :</td>
+                <td>
+                    <asp:DropDownList ID="ddlUserSelection" runat="server">
+                        <asp:ListItem Text="1" Value="1" Selected="True"></asp:ListItem>
+                        <asp:ListItem Text="2" Value="2"></asp:ListItem>
+                        <asp:ListItem Text="3" Value="3"></asp:ListItem>
+                        <asp:ListItem Text="4" Value="4"></asp:ListItem>
+                        <asp:ListItem Text="5" Value="5"></asp:ListItem>
+                    </asp:DropDownList>
+                </td>
+            </tr>
+            <tr>
+                <td>Password :</td>
+                <td>
+                    <asp:TextBox ID="txtPwd" runat="server"  TextMode="Password"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Button ID="btnSubmit" runat="server" Text="Register" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+</html>
+
+
+<script src="lib/jquery.min.js"></script>
+<%--<link href="assests/css/style.css" rel="stylesheet" />
+<script src="assests/js/index.js"></script>--%>
+
+<script>
+    //$(function () {
+
+    //});
+
+    $("#btnSubmit").bind("click", function () {
+   
+            var UserType = document.getElementById("<%=this.ddlUserType.ClientID %>");
+            var UserName = document.getElementById("<%=this.txtUserName.ClientID %>");
+            var FirstName = document.getElementById("<%=this.txtFirstName.ClientID %>");
+            var LastName = document.getElementById("<%=this.txtLastName.ClientID %>");
+            var Address = document.getElementById("<%=this.txtAddress.ClientID %>");
+            var PinCode = document.getElementById("<%=this.txtPin.ClientID %>");
+            var City = document.getElementById("<%=this.ddlCity.ClientID %>");
+            var State = document.getElementById("<%=this.ddlState.ClientID %>");
+            var Country = document.getElementById("<%=this.ddlCountry.ClientID %>");
+            var MobileNo = document.getElementById("<%=this.txtMobileNo.ClientID %>");
+            var Email = document.getElementById("<%=this.txtEmail.ClientID %>");
+            var CompanyName = document.getElementById("<%=this.txtCompany.ClientID %>");
+            var ApplicationName = document.getElementById("<%=this.txtApplication.ClientID %>");
+            var UserSelection = document.getElementById("<%=this.ddlUserSelection.ClientID %>");
+            var Password = document.getElementById("<%=this.txtPwd.ClientID %>");
+
+            var Emailfilter = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+            if (UserName.value == "") {
+                UserName.focus();
+                alert("Enter User Name..");
+                return false;
+            }
+            else if (FirstName.value == "") {
+                FirstName.focus();
+                alert("Enter First Name..");
+                return false;
+            }
+            else if (LastName.value == "") {
+                LastName.focus();
+                alert("Enter Last Name..");
+                return false;
+            }
+            else if (Address.value == "") {
+                Address.focus();
+                alert("Enter Address..");
+                return false;
+            }
+            else if (PinCode.value == "") {
+                PinCode.focus();
+                alert("Enter PinCode..");
+                return false;
+            }
+            else if (PinCode.value != "" && PinCode.value.length != 6) {
+                PinCode.focus();
+                alert("Enter Valid PinCode..");
+                return false;
+            }          
+            else if (MobileNo.value != "" && MobileNo.value.length != 10) {
+                MobileNo.focus();
+                alert("Enter valid MobileNo..");
+                return false;
+            }
+            else if (Email.value != "" && Emailfilter.test(Email.value) == false) {
+                alert("Enter Valid Email");
+                Email.focus();
+                return false;
+            }
+            else if (Email.value == "") {
+                Email.focus();
+                alert("Enter Email..");
+                return false;
+            }
+            else if (CompanyName.value == "") {
+                CompanyName.focus();
+                alert("Enter Company Name..");
+            }
+            else if (ApplicationName.value == "") {
+                ApplicationName.focus();
+                alert("Enter Application Name..");
+                return false;
+            }
+            else if (Password.value == "") {
+                Password.focus();
+                alert("Enter Password..");
+                return false;
+            }
+            else {
+
+                $.ajax({
+                    type: "POST",
+                    url: "UserRegistration.aspx/CheckHardware",
+                    data: '{}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    success: onSuccessCheck, 
+                    failure: function (response) {
+                        alert("1");
+                        //swal(response.d);
+                    },
+                    error: function (response) {
+                        alert("2");
+                       // swal("error");
+                    }
+                });                
+            }
+        });
+    
+    function onSuccessCheck(response) {
+        
+        var msg = response.d;
+       
+        if (msg == false) {
+
+            var UReg = {};
+            UReg.UserName = document.getElementById("<%=this.txtUserName.ClientID %>").value;
+             UReg.UserType = document.getElementById("<%=this.ddlUserType.ClientID %>").value;
+            UReg.FirstName = document.getElementById("<%=this.txtFirstName.ClientID %>").value;
+            UReg.LastName = document.getElementById("<%=this.txtLastName.ClientID %>").value;
+            UReg.Address = document.getElementById("<%=this.txtAddress.ClientID %>").value;
+            UReg.Pincode = document.getElementById("<%=this.txtPin.ClientID %>").value;
+            UReg.City = document.getElementById("<%=this.ddlCity.ClientID %>").value;
+            UReg.State = document.getElementById("<%=this.ddlState.ClientID %>").value;
+            UReg.Country = document.getElementById("<%=this.ddlCountry.ClientID %>").value;
+            UReg.MobileNo = document.getElementById("<%=this.txtMobileNo.ClientID %>").value;
+            UReg.Email = document.getElementById("<%=this.txtEmail.ClientID %>").value;
+            UReg.Comname = document.getElementById("<%=this.txtCompany.ClientID %>").value;
+            UReg.Application = document.getElementById("<%=this.txtApplication.ClientID %>").value;
+            UReg.UserSeletetion = document.getElementById("<%=this.ddlUserSelection.ClientID %>").value;
+            UReg.Pwd = document.getElementById("<%=this.txtPwd.ClientID %>").value;
+
+            $.ajax({
+                type: "POST",
+                url: "UserRegistration.aspx/ManageUserDetail",
+                data: '{UReg: ' + JSON.stringify(UReg) + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: alert("Check Your Email to Verify Your Account"),
+                failure: function (response) {
+                    swal(response.d);
+                },
+                error: function (response) {
+                    swal(response.d);
+                }
+            });
+        }
+        else {
+            alert("Your System Is Already Register..!")
+        }
+    }
+</script>

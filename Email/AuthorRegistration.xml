@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<email>
+  <subject> Software User Registration: </subject>
+  <messgae>
+    <![CDATA[<html>
+   
+                                        Click on the link given below or copy and paste the entire link to browser address bar. 
+                                        <br />
+                                        <a href="##VERIFYPAGEURL##">Verify My Email</a> 
+                                        <br />
+                                        Your UserName: ##USERNAME##
+                                        <br />
+                                        Your Password: ##PASSWORD##
+                                        <br />
+    </html>]]>
+  </messgae>
+</email>
